@@ -35,6 +35,9 @@ void temp_humi_monitor(void *pvParameters){
     display.clearDisplay();
     display.display();
 
+    float prev_temperature = 0.0;
+    float prev_humidity = 0.0;
+
     while (1){
         /* code */
         int err = 0; // SimpleDHTErrSuccess
@@ -59,14 +62,17 @@ void temp_humi_monitor(void *pvParameters){
         if (err != 0) { // SimpleDHTErrSuccess là 0
             Serial.print("Read DHT failed, err=");
             Serial.println(err);
-            temperature = humidity = -1;
+            temperature = prev_temperature;
+            humidity = prev_humidity;
             //return;
         }
 
         //Update global variables for temperature and humidity
         glob_temperature = temperature;
         glob_humidity = humidity;
-
+        prev_temperature = temperature;
+        prev_humidity = humidity;
+        
         // Print the results to Serial
         
         Serial.print("Humidity: ");
